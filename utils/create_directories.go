@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"os"
-
+	"path/filepath"
 )
 
 // creates all the necessary directories for initial project
@@ -52,17 +52,17 @@ func CreateDirectories(projectName string) error {
 		return err
 	}
 
-	err = CreateSubDir(projectName, "internal/handlers", 0755)
+	err = CreateSubDir(projectName, filepath.Join("internal", "handlers"), 0755)
 	if err != nil {
 		return err
 	}
 
-	err = CreateSubDir(projectName, "internal/middleware", 0755)
+	err = CreateSubDir(projectName, filepath.Join("internal", "middlewares"), 0755)
 	if err != nil {
 		return err
 	}
 
-	err = CreateSubDir(projectName, "internal/utils", 0755)
+	err = CreateSubDir(projectName, filepath.Join("internal", "utils"), 0755)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func CreateDirectories(projectName string) error {
 
 // helper to create sub directories
 func CreateSubDir(projectName, dirName string, perm os.FileMode) error {
-	err := os.Mkdir(fmt.Sprintf("./%v/%v", projectName, dirName), perm)
+	err := os.Mkdir(filepath.Join(".", projectName, dirName), perm)
 	if err != nil {
 		return err
 	}

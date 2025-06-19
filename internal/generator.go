@@ -8,12 +8,12 @@ import (
 	"text/template"
 )
 
-//go:embed templates/*.tmpl
+//go:embed templates/*/*.tmpl
 var tmplFS embed.FS
 
 
 // generates file from given template
-func GenerateFiles(outputDir, tmplUse string, data interface{}) error {
+func GenerateFiles(outputDir, filename, tmplUse string, data interface{}) error {
 	tmpl, err := template.ParseFS(tmplFS, fmt.Sprintf("templates/%v", tmplUse))
 	if err != nil {
 		return err
