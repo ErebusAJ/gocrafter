@@ -1,0 +1,8 @@
+package handlers
+
+import "github.com/gin-gonic/gin"
+
+// test handler which returns a greeting message
+func greetings(c *gin.Context) {
+	c.IndentedJSON(200, gin.H{"message" : "Greetings to fellow gopher from gocrafters!!"})
+}

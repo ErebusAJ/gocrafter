@@ -1,9 +1,42 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"{{.ProjectModule}}/internal/handlers"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+)
+
+// This API project scaffold uses gin framework by default
 
 func main() {
     fmt.Println("Welcome to {{.ProjectName}}!")
+
+    // gin router initialization
+    r := gin.Default()
+
+    // load godotenv and get port no from env
+    if err := godotenv.Load(); err != nil {
+        log.Printf("error loading .env file: %v \n", err)
+    }
+    portNo := os.Getenv("PORT_NO")
+    if portNo == "" {
+        portNo = "8080"
+        log.Println("error PORT_NO not found, defaulting to 8080")
+    }
+
+    // register routes handles the defining of route internal/handlers/routes.go
+    handlers.RegisterRoutes(r)
+
+    // by default runs on all domains 
+    // change ":" for your preferred 
+    if err := r.Run(":"+portNo); err != nil {
+        log.Fatalf("error starting server %v \n", err)
+    }
+    
 }
 
-// Thanks for using gocrafters!
+// Thanks for using gocrafter!

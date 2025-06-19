@@ -19,7 +19,7 @@ func GenerateFiles(outputDir, filename, tmplUse string, data interface{}) error 
 		return err
 	}
 
-	outPath := filepath.Join(outputDir, "main.go")
+	outPath := filepath.Join(outputDir, filename)
 	outFile, err := os.Create(outPath)
 	if err != nil {
 		return err

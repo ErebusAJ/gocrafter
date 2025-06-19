@@ -62,19 +62,24 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// create main.go entry point
-	if err := internal.GenerateFiles(name, "main.go", "api/main.go.tmpl", struct{ProjectName string}{ProjectName: name}); err != nil {
+	// // create main.go entry point
+	// if err := internal.GenerateFiles(name, "main.go", "api/main.go.tmpl", struct{ProjectName string}{ProjectName: name}); err != nil {
+	// 	return err
+	// }
+	if err := utils.CreateFiles(name); err != nil {
 		return err
 	}
-
 
 	// case for different types of initializations template specific
 	switch template {
 	case "base":
 		fmt.Println("init: flag -t not provided defaulting to base")
+		if err := internal.GenerateFiles(name, "main.go", "base/main.go.tmpl", struct{ProjectName string}{ProjectName: name}); err != nil {
+			return err
+		}
 
 	case "api" :
-		if err := utils.ApiInit(); err != nil  {
+		if err := utils.ApiInit(name, module); err != nil  {
 			return err
 		}
 	
@@ -87,6 +92,25 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		fmt.Println("init: flag -t malformed accpeted (api/cli)")
 	}
 	
+
+	// go mod tidy cmd
+	goTidy := exec.Command("go", "mod", "tidy")
+	goTidy.Dir = filepath.Join(".", name)
+	goTidy.Stdout = os.Stdout
+	goTidy.Stderr = os.Stderr
+	if err := goTidy.Run(); err != nil {
+		return err
+	}
+
+	// go mod vendor cmd
+	goVendor := exec.Command("go", "mod", "vendor")
+	goVendor.Dir = filepath.Join(".", name)
+	goVendor.Stdout = os.Stdout
+	goVendor.Stderr = os.Stderr
+	if err := goVendor.Run(); err != nil {
+		return err
+	}
+
 
 	fmt.Printf("Your Go project: %v has been initialized. \n", name)
 	fmt.Println("Thank You! For using gocrafter")

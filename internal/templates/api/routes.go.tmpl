@@ -1,0 +1,10 @@
+package handlers
+
+import "github.com/gin-gonic/gin"
+
+func RegisterRoutes(r *gin.Engine) {
+	
+	// routes 
+	// define all the routes here for your backend server 
+	r.GET("/v1/greeting", greetings)
+}
