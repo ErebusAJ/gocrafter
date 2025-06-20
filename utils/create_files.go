@@ -3,6 +3,8 @@ package utils
 import "github.com/ErebusAJ/gocrafter/internal"
 
 
+// CreateFiles
+// creates necessary files like .gitignore, readme, env
 func CreateFiles(projectName string) error {
 	// create .env
 	if err := internal.GenerateFiles(projectName, ".env", "base/env.tmpl", nil); err != nil {

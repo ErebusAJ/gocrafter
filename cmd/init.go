@@ -15,6 +15,10 @@ import (
 var name   		string
 var module 		string
 var template	string
+var db			string
+var useSqlc		bool
+var useGoose	bool
+var useDocker	bool
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -39,8 +43,22 @@ func init() {
 
 	// template type
 	initCmd.Flags().StringVarP(&template, "template", "t", "base", "type of go project api, cli defaults to base")
+
+	// db type
+	initCmd.Flags().StringVarP(&db, "database", "d", "postgresql", "name of database to be used")
+
+	// sqlc flag
+	initCmd.Flags().BoolVar(&useSqlc, "sqlc", false, "setup sqlc for sql query generation")
+
+	// goose flag
+	initCmd.Flags().BoolVar(&useGoose, "goose", false, "setup goose for database migrations")
+
+	// docker flag
+	initCmd.Flags().BoolVar(&useDocker, "docker", false, "setup docker for containerization")
 }
 
+
+// run function for initCmd
 func cmdRun(cmd *cobra.Command, args []string) error {
 	
 	// check malformed module path
@@ -62,10 +80,7 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// // create main.go entry point
-	// if err := internal.GenerateFiles(name, "main.go", "api/main.go.tmpl", struct{ProjectName string}{ProjectName: name}); err != nil {
-	// 	return err
-	// }
+	// create necessary files
 	if err := utils.CreateFiles(name); err != nil {
 		return err
 	}
@@ -91,6 +106,26 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 	default:
 		fmt.Println("init: flag -t malformed accpeted (api/cli)")
 	}
+
+	// optinal setups
+	if useSqlc {
+		if db == "" || (db != "postgresql" && db != "mysql" && db != "sqlite") {
+			return fmt.Errorf("sqlc: error database type should be specified supported (postgresql, mysql, sqlite)")
+		}
+		if err := utils.SqlcInit(name, db); err != nil {
+			return err
+		}
+	}
+	// if useGoose {
+	// 	if err := utils.GooseInit(name); err != nil {
+	// 		return err
+	// 	}
+	// }
+	// if useDocker {
+	// 	if err := utils.DockerInit(name); err != nil {
+	// 		return err
+	// 	}
+	// }
 	
 
 	// go mod tidy cmd

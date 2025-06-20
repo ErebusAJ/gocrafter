@@ -73,6 +73,7 @@ func CreateDirectories(projectName string) error {
 
 
 // helper to create sub directories
+// ./projectName/newDir
 func CreateSubDir(projectName, dirName string, perm os.FileMode) error {
 	err := os.Mkdir(filepath.Join(".", projectName, dirName), perm)
 	if err != nil {

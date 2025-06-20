@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - schema: "migrations/schema"
+    queries: "migrations/sql"
+    engine: "{{.DBType}}"
+    gen:
+      go:
+        out: "db"
+        package: "db"
