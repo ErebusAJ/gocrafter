@@ -116,11 +116,13 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
-	// if useGoose {
-	// 	if err := utils.GooseInit(name); err != nil {
-	// 		return err
-	// 	}
-	// }
+
+	if useGoose {
+		if err := utils.GooseInit(name); err != nil {
+			return err
+		}
+	}
+	
 	// if useDocker {
 	// 	if err := utils.DockerInit(name); err != nil {
 	// 		return err

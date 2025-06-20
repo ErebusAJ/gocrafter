@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,7 +12,7 @@ import (
 // setup sqlc package for user
 // sqlc - is used to generate type safe go queries
 func SqlcInit(projectName, dbType string) error {
-
+	fmt.Println("setting up sqlc...")
 	// install sqlc
 	sqlcInstlCmd := exec.Command("go", "install", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest")
 	sqlcInstlCmd.Dir = filepath.Join(".", projectName)
@@ -57,5 +58,6 @@ func SqlcInit(projectName, dbType string) error {
 		return err
 	}
 
+	fmt.Println("sqlc setup complete!!")
 	return nil
 }
