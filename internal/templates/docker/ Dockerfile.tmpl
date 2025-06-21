@@ -10,7 +10,7 @@ ENV GO111MODULE=on \
 
 
 # Set working directory
-WORKDIR app/
+WORKDIR /app
 
 
 # Copy and dowload packages from go.mod
@@ -26,8 +26,8 @@ COPY . .
 
 
 # Build 
-RUN go mod -o {{.ProjectName}}
+RUN go build -o {{.ProjectName}}
 
 
 # Run 
-CMD ["./{{.ProjectName}}]
+CMD ["./{{.ProjectName}}"]

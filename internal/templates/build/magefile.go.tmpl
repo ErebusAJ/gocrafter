@@ -1,0 +1,75 @@
+// +build mage
+
+package main
+
+import (
+	"os"
+	"os/exec"
+)
+
+// This is magefile for build/execute commands automation
+// Write your command functions here 
+
+
+// cmd: mage build 
+// use: builds go project
+func Build() error {
+	cmd := exec.Command("go", "build", "-o", "{{.ProjectName}}")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	
+	return cmd.Run()
+}
+
+
+// cmd: mage run
+// use: runs go project without build
+func Run() error {
+	cmd := exec.Command("go", "run", "main.go")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	return cmd.Run()
+}
+
+
+// cmd: mage exec 
+// use: builds and runs go project
+func Exec() error {
+    if err := Build(); err != nil {
+        return err 
+    }
+	cmd := exec.Command("./{{.ProjectName}}")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	return cmd.Run()
+}
+
+{{if .UseDocker}}
+// cmd: mage dockerbuild
+// use: builds docker image
+func DockerBuild() error {
+    cmd := exec.Command("docker", "build", "-t", "{{.ProjectName}}:latest", ".")
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    return cmd.Run()
+}
+{{end}}
+
+
+{{if .UseGoose}}
+// cmd: mage gooseup
+// use: migrates db to the most recent version available
+func GooseUp() error {
+    // replace db-conn: with your database connection string
+    cmd := exec.Command("goose", "{{.DbType}}", "<db-conn>", "up")
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    return cmd.Run()
+}
+{{end}}
+
+

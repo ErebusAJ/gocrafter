@@ -19,6 +19,7 @@ var db			string
 var useSqlc		bool
 var useGoose	bool
 var useDocker	bool
+var magefile 	bool
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -55,6 +56,9 @@ func init() {
 
 	// docker flag
 	initCmd.Flags().BoolVar(&useDocker, "docker", false, "setup docker for containerization")
+
+	// magefile flag
+	initCmd.Flags().BoolVar(&magefile, "magefile", false, "setup magefile for cli commands automation")
 }
 
 
@@ -118,6 +122,9 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 	}
 
 	if useGoose {
+		if db == "" || (db != "postgresql" && db != "mysql" && db != "sqlite") {
+			return fmt.Errorf("sqlc: error database type should be specified supported (postgresql, mysql, sqlite)")
+		}
 		if err := utils.GooseInit(name); err != nil {
 			return err
 		}
@@ -129,6 +136,14 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		}
 	}
 	
+	
+	// magefile setup
+	if magefile {
+		if err := utils.MageInit(name, db, useDocker, useGoose); err != nil {
+			return err
+		}
+	}
+
 
 	// go mod tidy cmd
 	goTidy := exec.Command("go", "mod", "tidy")
