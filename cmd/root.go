@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/common-nighthawk/go-figure"
@@ -17,7 +18,10 @@ Save yourself the repetitive task of setting up same things.
 `,
 	Run: func(cmd *cobra.Command, args []string) { 
 		if len(os.Args) == 1 {
-			figure.NewColorFigure("Go-Crafter", "isometric1", "cyan", true).Print()
+			figure.NewColorFigure("Go-Crafter", "isometric3", "cyan", true).Print()
+			figure.NewColorFigure("Kickstart your go project", "drpepper", "green", true).Print()
+			fmt.Println()
+			cmd.Help()
 		}
 	},
 }
