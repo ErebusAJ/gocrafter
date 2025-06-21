@@ -1,0 +1,33 @@
+# Base Image
+FROM golang:1.23-alpine
+
+
+# Environment variables
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+
+# Set working directory
+WORKDIR app/
+
+
+# Copy and dowload packages from go.mod
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+
+# Copy rest of the project
+COPY . .
+
+
+{{.ExposePort}}
+
+
+# Build 
+RUN go mod -o {{.ProjectName}}
+
+
+# Run 
+CMD ["./{{.ProjectName}}]

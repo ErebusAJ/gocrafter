@@ -123,11 +123,11 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		}
 	}
 	
-	// if useDocker {
-	// 	if err := utils.DockerInit(name); err != nil {
-	// 		return err
-	// 	}
-	// }
+	if useDocker {
+		if err := utils.DockerInit(name, template); err != nil {
+			return err
+		}
+	}
 	
 
 	// go mod tidy cmd

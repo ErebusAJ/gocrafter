@@ -10,7 +10,7 @@ import (
 // setup goose for user's project
 // goose - handles db migrations
 func GooseInit(projectName string) error {
-	fmt.Println("setting up goose...")
+	fmt.Println("Setting up goose...")
 
 	// goose install
 	gooseInstlCmd := exec.Command("go", "install", "github.com/pressly/goose/v3/cmd/goose@latest")
