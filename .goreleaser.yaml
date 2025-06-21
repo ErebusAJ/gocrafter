@@ -16,6 +16,13 @@ before:
     - go generate ./...
 
 builds:
+  - main: ./main.go
+    binary: gocrafter
+    ldflags:
+      - -s -w
+      - -X github.com/ErebusAJ/gocrafter/cmd.Version={{.Version}}
+      - -X github.com/ErebusAJ/gocrafter/cmd.Date={{.Date}}
+
   - env:
       - CGO_ENABLED=0
     goos:
