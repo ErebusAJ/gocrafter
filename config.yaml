@@ -1,0 +1,8 @@
+name: myapp
+module: github.com/you/myapp
+template: api
+db: postgresql
+sqlc: true
+goose: true
+docker: true
+magefile: true
