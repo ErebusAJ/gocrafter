@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"runtime"
+
 	"github.com/ErebusAJ/gocrafter/internal"
 )
 
@@ -27,8 +29,16 @@ EXPOSE 8080`,
 		}
 	}
 
+	//template os check
+	var template string
+	if runtime.GOOS == "windows" {
+		template = "docker/ Dockerfile.windows.tmpl"
+	} else {
+		template = "docker/ Dockerfile.linux.tmpl"
+	}
+
 	// generate docker file
-	if err := internal.GenerateFiles(projectName, "Dockerfile", "docker/ Dockerfile.tmpl", data); err != nil {
+	if err := internal.GenerateFiles(projectName, "Dockerfile", template, data); err != nil {
 		return  err
 	}
 	

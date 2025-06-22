@@ -1,0 +1,35 @@
+# Base Image
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# Environment variables
+ENV GO111MODULE=on `
+    CGO_ENABLED=0 `
+    GOOS=windows `
+    GOARCH=amd64
+
+# Install Go manually 
+RUN powershell -Command `
+    Invoke-WebRequest https://go.dev/dl/go1.23.windows-amd64.msi -OutFile go.msi ; `
+    Start-Process msiexec.exe -Wait -ArgumentList '/quiet', '/i', 'go.msi' ; `
+    Remove-Item go.msi
+
+# Add Go to PATH
+ENV PATH="C:\\Go\\bin;${PATH}"
+
+# Set working directory
+WORKDIR /app
+
+# Copy go mod files and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+
+# Copy source code
+COPY . .
+
+{{.ExposePort}}
+
+# Build
+RUN go build -o {{.ProjectName}}.exe
+
+# Run
+CMD ["{{.ProjectName}}.exe"]
