@@ -39,7 +39,11 @@ func Exec() error {
     if err := Build(); err != nil {
         return err 
     }
-	cmd := exec.Command("./{{.ProjectName}}")
+	{{if eq .OsWin "windows"}}
+		cmd := exec.Command("./{{.ProjectName}}.exe")
+	{{else}}
+		cmd := exec.Command("./{{.ProjectName}}")
+	{{end}}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
