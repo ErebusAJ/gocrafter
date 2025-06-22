@@ -1,15 +1,12 @@
 package utils
 
 import (
-	"fmt"
-
 	"github.com/ErebusAJ/gocrafter/internal"
 )
 
 // setup a Dockerfile based on user's project
 // for containerization
 func DockerInit(projectName, tmplType string) error {
-	fmt.Println("Setting up docker...")
 
 	// setting up data to embed in template file according to template type
 	var data interface{}
@@ -35,6 +32,5 @@ EXPOSE 8080`,
 		return  err
 	}
 	
-	fmt.Println("Docker setup complete!!")
 	return  nil
 }

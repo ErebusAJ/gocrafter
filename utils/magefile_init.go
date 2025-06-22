@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"runtime"
@@ -11,11 +10,10 @@ import (
 
 // setup magefile for cli commands automations
 func MageInit(projectName, db string, useDocker, useGoose bool) error {
-	fmt.Println("setting up magefile...")
 
 	// install go mage
 	cmd := exec.Command("go", "install", "github.com/magefile/mage@latest")
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = nil
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		return  err
@@ -56,8 +54,6 @@ func MageInit(projectName, db string, useDocker, useGoose bool) error {
 	if err := internal.GenerateFiles(projectName, "magefile.go", "build/magefile.go.tmpl", data); err != nil {
 		return  err
 	}
-
-	fmt.Println("magefile setup complete!!")
 
 	return nil
 } 

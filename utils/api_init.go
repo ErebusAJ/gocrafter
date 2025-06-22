@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"os"
 	"os/exec"
 	"path/filepath"
 
@@ -47,7 +46,7 @@ func ApiInit(projectName, projectModule string) error {
 func installPackage(projectName, packageName string) error {
 	cmd := exec.Command("go", "get", packageName)
 	cmd.Dir = projectName
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = nil
+	cmd.Stderr = nil
 	return cmd.Run()
 }

@@ -12,12 +12,14 @@ import (
 // setup sqlc package for user
 // sqlc - is used to generate type safe go queries
 func SqlcInit(projectName, dbType string) error {
-	fmt.Println("Setting up sqlc...")
+	if dbType == "" || (dbType != "postgresql" && dbType != "mysql" && dbType != "sqlite") {
+		return fmt.Errorf("sqlc: error database type should be specified supported (postgresql, mysql, sqlite)")
+	}
 	// install sqlc
 	sqlcInstlCmd := exec.Command("go", "install", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest")
 	sqlcInstlCmd.Dir = filepath.Join(".", projectName)
 	sqlcInstlCmd.Stderr = os.Stderr
-	sqlcInstlCmd.Stdout = os.Stdout
+	sqlcInstlCmd.Stdout = nil
 	if err := sqlcInstlCmd.Run(); err != nil {
 		return err
 	}
@@ -53,11 +55,10 @@ func SqlcInit(projectName, dbType string) error {
 	sqlcCmd := exec.Command("sqlc", "generate")
 	sqlcCmd.Dir = filepath.Join(".", projectName)
 	sqlcCmd.Stderr = os.Stderr
-	sqlcCmd.Stdout = os.Stdout
+	sqlcCmd.Stdout = nil
 	if err := sqlcCmd.Run(); err != nil {
 		return err
 	}
 
-	fmt.Println("sqlc setup complete!!")
 	return nil
 }

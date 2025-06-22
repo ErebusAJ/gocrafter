@@ -9,10 +9,9 @@ import (
 
 	"github.com/ErebusAJ/gocrafter/internal"
 	"github.com/ErebusAJ/gocrafter/utils"
-	"github.com/spf13/cobra"
 	"github.com/go-yaml/yaml"
+	"github.com/spf13/cobra"
 )
-
 
 // falgs variables
 var name   		string
@@ -117,7 +116,7 @@ func cmdRun(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	fmt.Printf("Your Go project: %v has been initialized. \n", name)
+	fmt.Printf("\n🎉 Your Go project: %v has been initialized. \n", config.Name)
 	fmt.Println("Thank You! For using gocrafter")
 	return nil
 }
@@ -138,14 +137,18 @@ func initRun(config InitConfig) error {
 	// go mod initialize cmd
 	modInitCmd := exec.Command("go", "mod", "init", config.Module)
 	modInitCmd.Dir = filepath.Join(".", config.Name)
-	modInitCmd.Stdout = os.Stdout
-	modInitCmd.Stderr = os.Stderr
+	modInitCmd.Stdout = nil
+	modInitCmd.Stderr = nil
 	if err := modInitCmd.Run(); err != nil {
 		return err
 	}
 
+	fmt.Println()
+
 	// create necessary files
-	if err := utils.CreateFiles(config.Name); err != nil {
+	if err := utils.ProgressTask("Setting up directories", func() error {
+		return utils.CreateFiles(config.Name)
+	}); err != nil {
 		return err
 	}
 
@@ -158,12 +161,16 @@ func initRun(config InitConfig) error {
 		}
 
 	case "api" :
-		if err := utils.ApiInit(config.Name, config.Module); err != nil  {
+		if err := utils.ProgressTask("Setting up API template", func() error {
+			return utils.ApiInit(config.Name, config.Module)
+		}); err != nil  {
 			return err
 		}
 	
 	case "cli" :
-		if err := utils.CliInit(); err != nil {
+		if err := utils.ProgressTask("Setting up CLI template", func() error {
+			return utils.CliInit()
+		}); err != nil {
 			return err
 		}
 	
@@ -172,44 +179,40 @@ func initRun(config InitConfig) error {
 	}
 
 	// optinal setups
-	if config.UseSqlc {
-		if config.Db == "" || (config.Db != "postgresql" && config.Db != "mysql" && config.Db != "sqlite") {
-			return fmt.Errorf("sqlc: error database type should be specified supported (postgresql, mysql, sqlite)")
-		}
-		if err := utils.SqlcInit(config.Name, config.Db); err != nil {
-			return err
-		}
+
+	// sqlc
+	if err := utils.ProgressTask("Initializing sqlc", func() error {
+		return utils.SqlcInit(config.Name, config.Db)
+	}); err != nil {
+		return err
 	}
 
-	if config.UseGoose {
-		if config.Db == "" || (config.Db != "postgresql" && config.Db != "mysql" && config.Db != "sqlite") {
-			return fmt.Errorf("sqlc: error database type should be specified supported (postgresql, mysql, sqlite)")
-		}
-		if err := utils.GooseInit(config.Name); err != nil {
-			return err
-		}
+	// goose
+	if err := utils.ProgressTask("Initializing goose", func() error {
+		return utils.GooseInit(config.Name, config.Db)
+	}); err != nil {
+		return err
 	}
 	
-	if config.UseDocker {
-		if err := utils.DockerInit(config.Name, config.Template); err != nil {
-			return err
-		}
+	// docker
+	if err := utils.ProgressTask("Setting up Dockerfile", func() error {
+		return utils.DockerInit(config.Name, config.Template); 
+	}); err != nil {
+		return err
 	}
 	
-	
-	// magefile setup
-	if config.Magefile {
-		if err := utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose); err != nil {
-			return err
-		}
+	// magefile
+	if err := utils.ProgressTask("Configuring magefile", func () error {
+		return utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose)
+	}); err != nil {
+		return err
 	}
-
 
 	// go mod tidy cmd
 	goTidy := exec.Command("go", "mod", "tidy")
 	goTidy.Dir = filepath.Join(".", config.Name)
-	goTidy.Stdout = os.Stdout
-	goTidy.Stderr = os.Stderr
+	goTidy.Stdout = nil
+	goTidy.Stderr = nil
 	if err := goTidy.Run(); err != nil {
 		return err
 	}
@@ -217,8 +220,8 @@ func initRun(config InitConfig) error {
 	// go mod vendor cmd
 	goVendor := exec.Command("go", "mod", "vendor")
 	goVendor.Dir = filepath.Join(".", config.Name)
-	goVendor.Stdout = os.Stdout
-	goVendor.Stderr = os.Stderr
+	goVendor.Stdout = nil
+	goVendor.Stderr = nil
 	if err := goVendor.Run(); err != nil {
 		return err
 	}
