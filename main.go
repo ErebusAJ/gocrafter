@@ -1,5 +1,5 @@
 /*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
+Copyright © 2025 Aarya Jamwal dev.erebusaj@gmail.com
 
 */
 package main
