@@ -14,7 +14,11 @@ import (
 // cmd: mage build 
 // use: builds go project
 func Build() error {
-	cmd := exec.Command("go", "build", "-o", "{{.ProjectName}}")
+	{{if eq .OsWin "windows"}}
+		cmd := exec.Command("go", "build", "-o", "{{.ProjectName}}.exe")
+	{{else}}
+		cmd := exec.Command("go", "build", "-o", "{{.ProjectName}}")
+	{{end}}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	

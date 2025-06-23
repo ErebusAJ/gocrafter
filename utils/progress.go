@@ -15,7 +15,7 @@ func ProgressTask(task string, work func() error) error {
 
 	err := work()
 	if err != nil {
-		s.FinalMSG = fmt.Sprintf(" %s failed \n", task)
+		s.FinalMSG = fmt.Sprintf("❌ %s failed \n", task)
 		s.Stop()
 		return err
 	}

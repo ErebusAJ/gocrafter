@@ -31,7 +31,7 @@ type InitConfig struct {
 	Name   		string	`yaml:"name"`
  	Module 		string	`yaml:"module"`
  	Template	string	`yaml:"template"`
-	Db			string	`yaml:"db"`
+	Db			string	`yaml:"database"`
 	UseSqlc		bool	`yaml:"sqlc"`
 	UseGoose	bool	`yaml:"goose"`
 	UseDocker	bool	`yaml:"docker"`
@@ -63,7 +63,7 @@ func init() {
 	initCmd.Flags().StringVarP(&template, "template", "t", "base", "type of go project api, cli defaults to base")
 
 	// db type
-	initCmd.Flags().StringVarP(&db, "database", "d", "postgresql", "name of database to be used")
+	initCmd.Flags().StringVarP(&db, "database", "d", "", "name of database to be used")
 
 	// sqlc flag
 	initCmd.Flags().BoolVar(&useSqlc, "sqlc", false, "setup sqlc for sql query generation")
@@ -180,7 +180,7 @@ func initRun(config InitConfig) error {
 
 	// optinal setups
 	// sqlc
-	if useSqlc{
+	if config.UseSqlc{
 		if err := utils.ProgressTask("Initializing sqlc", func() error {
 			return utils.SqlcInit(config.Name, config.Db)
 		}); err != nil {
@@ -189,7 +189,7 @@ func initRun(config InitConfig) error {
 	}
 
 	// goose
-	if useGoose{
+	if config.UseGoose{
 		if err := utils.ProgressTask("Initializing goose", func() error {
 			return utils.GooseInit(config.Name, config.Db)
 		}); err != nil {
@@ -198,7 +198,7 @@ func initRun(config InitConfig) error {
 	}
 	
 	// docker
-	if useDocker{
+	if config.UseDocker{
 		if err := utils.ProgressTask("Setting up Dockerfile", func() error {
 			return utils.DockerInit(config.Name, config.Template); 
 		}); err != nil {
@@ -207,7 +207,7 @@ func initRun(config InitConfig) error {
 	}
 	
 	// magefile
-	if magefile{
+	if config.Magefile{
 		if err := utils.ProgressTask("Configuring magefile", func () error {
 			return utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose)
 		}); err != nil {
@@ -250,7 +250,7 @@ func configParse(config *InitConfig) error {
 	}
 
 	// unmarshal
-	if err := yaml.Unmarshal(readb, &config); err != nil {
+	if err := yaml.Unmarshal(readb, config); err != nil {
 		return  err
 	}
 
