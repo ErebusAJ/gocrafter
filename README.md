@@ -16,7 +16,7 @@
 
 ## Overview
 
-`Gocrafter` is a CLI tool for quickly generating idiomatic Go project structures. Whether you're building an API, CLI, or library, this tool creates boilerplate code and folder layout using embedded templates — no need to copy or clone anything.
+`Gocrafter` is a CLI tool for quickly generating idiomatic Go project structures and dowloading the required go packages. Whether you're building an API, CLI, or library, this tool creates boilerplate code and folder layout using embedded templates, no need to copy or clone anything.
 
 Ideal for developers who want to start new Go projects quickly with best practices baked in.
 
@@ -55,6 +55,9 @@ You can also use a YAML config file to avoid long flag chains:
 
 Checkout a sample yaml file: [Config](config.yaml)
 
+There are different types of template to choose from according to your project needs:
+  - **api** (uses gin)
+  - **cli** (uses cobra)
 ```bash
 gocrafter init --config config.yaml
 ```

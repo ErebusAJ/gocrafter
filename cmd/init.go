@@ -130,7 +130,7 @@ func initRun(config InitConfig) error {
 	}
 
 	// create all the initial directories 
-	if err := utils.CreateDirectories(config.Name); err != nil {
+	if err := utils.CreateDirectories(config.Name, config.Template); err != nil {
 		return err
 	}
 
@@ -169,7 +169,7 @@ func initRun(config InitConfig) error {
 	
 	case "cli" :
 		if err := utils.ProgressTask("Setting up CLI template", func() error {
-			return utils.CliInit()
+			return utils.CliInit(config.Name)
 		}); err != nil {
 			return err
 		}
@@ -179,33 +179,40 @@ func initRun(config InitConfig) error {
 	}
 
 	// optinal setups
-
 	// sqlc
-	if err := utils.ProgressTask("Initializing sqlc", func() error {
-		return utils.SqlcInit(config.Name, config.Db)
-	}); err != nil {
-		return err
+	if useSqlc{
+		if err := utils.ProgressTask("Initializing sqlc", func() error {
+			return utils.SqlcInit(config.Name, config.Db)
+		}); err != nil {
+			return err
+		}
 	}
 
 	// goose
-	if err := utils.ProgressTask("Initializing goose", func() error {
-		return utils.GooseInit(config.Name, config.Db)
-	}); err != nil {
-		return err
+	if useGoose{
+		if err := utils.ProgressTask("Initializing goose", func() error {
+			return utils.GooseInit(config.Name, config.Db)
+		}); err != nil {
+			return err
+		}
 	}
 	
 	// docker
-	if err := utils.ProgressTask("Setting up Dockerfile", func() error {
-		return utils.DockerInit(config.Name, config.Template); 
-	}); err != nil {
-		return err
+	if useDocker{
+		if err := utils.ProgressTask("Setting up Dockerfile", func() error {
+			return utils.DockerInit(config.Name, config.Template); 
+		}); err != nil {
+			return err
+		}
 	}
 	
 	// magefile
-	if err := utils.ProgressTask("Configuring magefile", func () error {
-		return utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose)
-	}); err != nil {
-		return err
+	if magefile{
+		if err := utils.ProgressTask("Configuring magefile", func () error {
+			return utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose)
+		}); err != nil {
+			return err
+		}
 	}
 
 	// go mod tidy cmd
@@ -234,6 +241,9 @@ func initRun(config InitConfig) error {
 func configParse(config *InitConfig) error {
 
 	// read yaml file
+	if !strings.HasSuffix(configFilePath, "gocrafter.yaml") {
+		return fmt.Errorf("config: error need gocrafter.yaml found: %v", configFilePath)
+	}
 	readb, err := os.ReadFile(configFilePath)
 	if err != nil {
 		return  fmt.Errorf("config: could not read config file - %v", err)
