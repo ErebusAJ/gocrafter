@@ -46,6 +46,25 @@ archives:
       - goos: windows
         formats: [zip]
 
+nfpms:
+  - id: deb
+    formats:
+      - deb
+
+    section: utils
+    priority: optional
+    maintainer: Aarya Jamwal <dev.erebusaj@gmail.com>
+    description: |
+      GoCrafter - A CLI tool to bootstrap production-ready Go projects.
+    vendor: gocrafter
+    homepage: https://github.com/ErebusAJ/gocrafter
+    license: GPL-3.0-or-later
+
+    bindir: /usr/bin
+
+    dependencies:
+      - git
+
 changelog:
   sort: asc
   filters:
