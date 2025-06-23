@@ -9,7 +9,7 @@ import (
 func CliInit(projectName string) error {
 
 	// install cobra 
-	cmd := exec.Command("go", "install", "github.com/spf13/cobra@latest")
+	cmd := exec.Command("go", "install", "github.com/spf13/cobra-cli@latest")
 	cmd.Dir = filepath.Join(projectName)
 	cmd.Stderr = nil
 	cmd.Stdout = nil
@@ -20,8 +20,8 @@ func CliInit(projectName string) error {
 	// initialize cobra 
 	initCmd := exec.Command("cobra", "init")
 	initCmd.Dir = filepath.Join(projectName)
-	cmd.Stderr = nil
-	cmd.Stdout = nil
+	initCmd.Stderr = nil
+	initCmd.Stdout = nil
 	if err := initCmd.Run(); err != nil {
 		return err
 	}

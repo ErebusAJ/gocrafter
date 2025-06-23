@@ -11,22 +11,16 @@ import (
 func DockerInit(projectName, tmplType string) error {
 
 	// setting up data to embed in template file according to template type
-	var data interface{}
+	check := false
 	if tmplType == "api" {
-		data = struct {
-			ProjectName string
-			ExposePort	string
-		}{
-			ProjectName: projectName,
-			ExposePort: `# Expose server port
-EXPOSE 8080`,
-		}
-	} else {
-		data = struct {
-			ProjectName string
-		} {
-			ProjectName: projectName,
-		}
+		check = true
+	} 
+	data := struct{
+		ProjectName string
+		ExposePort 	bool
+	} {
+		ProjectName: projectName,
+		ExposePort: check,
 	}
 
 	//template os check

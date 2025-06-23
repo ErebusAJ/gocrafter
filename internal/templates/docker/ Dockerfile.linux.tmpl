@@ -22,7 +22,10 @@ RUN go mod download && go mod verify
 COPY . .
 
 
-{{.ExposePort}}
+{{if .ExposePort}} 
+# Expose server port
+EXPOSE 8080
+{{end}}
 
 
 # Build 
