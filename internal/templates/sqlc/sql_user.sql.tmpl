@@ -1,13 +1,39 @@
+{{if eq .DBType "postgresql" }}
 -- name: CreateUser :exec
 INSERT INTO users(name, email)
 VALUES($1, $2);
 
 -- name: GetUserById :one
 SELECT * FROM users
-WHERE id=$1;
+WHERE id = $1;
 
 -- name: GetAllUser :many
 SELECT * FROM users;
 
+{{else if eq .DBType "mysql" }}
+-- name: CreateUser :exec
+INSERT INTO users(name, email)
+VALUES(?, ?);
+
+-- name: GetUserById :one
+SELECT * FROM users
+WHERE id = ?;
+
+-- name: GetAllUser :many
+SELECT * FROM users;
+
+{{else}}
+-- name: CreateUser :exec
+INSERT INTO users(name, email)
+VALUES(?, ?);
+
+-- name: GetUserById :one
+SELECT * FROM users
+WHERE id = ?;
+
+-- name: GetAllUser :many
+SELECT * FROM users;
+{{end}}
+
 -- This is a file created by default for setting up sqlc
--- Write your sql queries files in this folder {{.ProjectName}}/migrations/sql/
+-- Write your SQL queries in this folder: {{.ProjectName}}/migrations/sql/

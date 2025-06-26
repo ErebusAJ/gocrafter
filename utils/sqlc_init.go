@@ -41,13 +41,19 @@ func SqlcInit(projectName, dbType string) error {
 
 	// create sample table schema
 	outputPath := filepath.Join(projectName, "migrations", "schema")
-	if err := internal.GenerateFiles(outputPath, "001_users.sql", "sqlc/table_users.sql.tmpl", nil); err != nil {
+	if err := internal.GenerateFiles(outputPath, "001_users.sql", "sqlc/table_users.sql.tmpl", struct{DBType string}{DBType: dbType}); err != nil {
 		return err
 	}
 
 	// create sample sql query 
 	outputPath = filepath.Join(projectName, "migrations", "sql")
-	if err := internal.GenerateFiles(outputPath, "queries_users.sql", "sqlc/sql_user.sql.tmpl", struct{ProjectName string}{ProjectName: projectName}); err != nil {
+	if err := internal.GenerateFiles(outputPath, "queries_users.sql", "sqlc/sql_user.sql.tmpl", struct{
+		ProjectName string
+		DBType 		string
+		}{
+			ProjectName: projectName,
+			DBType: dbType,
+		}); err != nil {
 		return err
 	}
 
