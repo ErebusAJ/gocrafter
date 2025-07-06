@@ -1,0 +1,20 @@
+# Binaries
+/bin/
+/dist/
+/build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.out
+*.test
+
+gocrafter
+
+
+.vscode/
+
+magefile.go 
+
+vendor/
