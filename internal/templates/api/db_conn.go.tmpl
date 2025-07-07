@@ -1,0 +1,35 @@
+package utils
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
+	_ "{{ .DriverPackage }}"
+)
+
+// utils function to create a database connection
+// don't forget to add DB_URL in .env file 
+func DBconnect() (*sql.DB, error) {
+	godotenv.Load()
+
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
+		return nil, fmt.Errorf("error retrieving db url")
+	}
+
+	DB, err := sql.Open("{{ .DBDriver}}", dbURL)
+	if err != nil {
+		return nil, fmt.Errorf("error connecting to database")
+	}
+
+	if err := DB.Ping(); err != nil {
+		return nil, fmt.Errorf("error pinging database")
+	}
+
+	log.Println("connection with database established!!!")
+
+	return DB, err
+}

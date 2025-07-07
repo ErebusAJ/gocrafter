@@ -8,15 +8,21 @@ import (
 )
 
 // executes api template specific commands and installations
-func ApiInit(projectName, projectModule string) error {
+func ApiInit(projectName, projectModule, dbType string) error {
+	dbConn := false
+	if dbType != " " {
+		dbConn = true
+	}
 	// generate main.go
 	if err := internal.GenerateFiles(projectName, "main.go", "api/api_main.go.tmpl", 
 	struct{
 		ProjectName string 
 		ProjectModule string
+		DBconn bool
 	}{
 		ProjectName: projectName, 
 		ProjectModule: projectModule,
+		DBconn: dbConn,
 	}); err != nil {
 		return err
 	}

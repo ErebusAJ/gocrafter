@@ -17,7 +17,7 @@ func SqlcInit(projectName, dbType string) error {
 	}
 	// install sqlc
 	sqlcInstlCmd := exec.Command("go", "install", "github.com/sqlc-dev/sqlc/cmd/sqlc@latest")
-	sqlcInstlCmd.Dir = filepath.Join(".", projectName)
+	sqlcInstlCmd.Dir = filepath.Join(".", projectName)	
 	sqlcInstlCmd.Stderr = os.Stderr
 	sqlcInstlCmd.Stdout = nil
 	if err := sqlcInstlCmd.Run(); err != nil {

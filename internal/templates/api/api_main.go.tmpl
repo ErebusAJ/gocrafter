@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"{{.ProjectModule}}/internal/handlers"
+	"{{.ProjectModule}}/internal/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,14 @@ import (
 
 func main() {
     fmt.Println("Welcome to {{.ProjectName}}!")
+
+    {{ if .DBconn }}
+    DB, err := utils.DBconnect()
+	if err != nil{
+		log.Fatalf("failed to connect to DB: %v", err)
+	}
+    defer DB.Close()
+    {{ end }}
 
     // gin router initialization
     r := gin.Default()

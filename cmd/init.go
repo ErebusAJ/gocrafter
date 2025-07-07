@@ -162,7 +162,7 @@ func initRun(config InitConfig) error {
 
 	case "api" :
 		if err := utils.ProgressTask("Setting up API template", func() error {
-			return utils.ApiInit(config.Name, config.Module)
+			return utils.ApiInit(config.Name, config.Module, config.Db)
 		}); err != nil  {
 			return err
 		}
@@ -211,6 +211,13 @@ func initRun(config InitConfig) error {
 		if err := utils.ProgressTask("Configuring magefile", func () error {
 			return utils.MageInit(config.Name, config.Db, config.UseDocker, config.UseGoose)
 		}); err != nil {
+			return err
+		}
+	}
+
+	// setting up db connection
+	if config.UseSqlc || config.UseGoose {
+		err := utils.DBConnInit(config.Name ,config.Db); if err != nil {
 			return err
 		}
 	}
